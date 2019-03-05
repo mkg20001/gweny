@@ -52,7 +52,7 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
 
     try {
       const notificationFnc = notificationType.function
-      core.addNotification(notificationId, async notificationFnc(notification.config))
+      core.addNotification(notificationId, await notificationFnc(notification.config))
     } catch (e) {
       e.stack = 'Notification ' + JSON.stringify(notificationId) + '(type=' + JSON.stringify(notificationType) + ') failed to initialize: ' + e.stack
       throw e
@@ -78,7 +78,7 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
 
       try {
         const resourceFnc = resourceType.function
-        // Resources[resourceId] = async resourceFnc(resource.config)
+        Resources[resourceId] = await resourceFnc(resource.config)
         core.addResource(operationId, resourceId, resource, Resources[resourceId])
       } catch (e) {
         e.stack = 'Resource ' + JSON.stringify(operationId) + '.' + JSON.stringify(resourceId) + '(type=' + JSON.stringify(resourceType) + ') failed to initialize: ' + e.stack

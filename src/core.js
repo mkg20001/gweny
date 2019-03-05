@@ -30,7 +30,7 @@ module.exports = ({timeZone}) => {
     return new CronJob(interval, async () => {
       log.info(TAG, 'Starting check...')
       try {
-        // async healthCheck()
+        await healthCheck()
 
         db.set('occurences', false)
       } catch (e) {
