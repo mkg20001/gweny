@@ -17,6 +17,7 @@
   "author": "Maciej Krüger <mkg20001@gmail.com>",
   "license": "GPL-3.0",
   "dependencies": {
+    "bcrypt": "^3.0.4",
     "cron": "^1.6.0",
     "hapi": "^18.1.0",
     "hapi-auth-basic": "^5.0.0",
