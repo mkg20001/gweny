@@ -35,6 +35,7 @@ module.exports = ({timezone, api: apiConfig}) => {
         await healthCheck()
 
         db.set('occurences', false)
+        log.info(TAG, 'Success...')
       } catch (e) {
         Object.assign(e, TAG)
         log.error(e, 'Failed...')
@@ -161,9 +162,10 @@ module.exports = ({timezone, api: apiConfig}) => {
     start: async () => {
       log.info('Starting...')
       for (const opId in Operations) { // eslint-disable-line guard-for-in
-        for (const hcId in Operations[opId].healthCheck) { // eslint-disable-line guard-for-in
+        for (const hcId in Operations[opId].healthChecks) { // eslint-disable-line guard-for-in
           log.info({operationId: opId, healthCheckId: hcId}, 'Enabling job')
-          Operations[opId].healthCheck[hcId].job.start()
+          Operations[opId].healthChecks[hcId].job.start()
+          Operations[opId].healthChecks[hcId].job._callbacks[0]()
         }
       }
       if (api) {

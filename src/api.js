@@ -52,14 +52,14 @@ module.exports = ({host, port, authHash, auth}, core) => {
         method: 'GET',
         path: '/api/v1',
         handler: async (h, request) => {
-          const permissions = auth ? request.credentials.permissions : true
+          const permissions = auth ? (h.auth.credentials.permissions || []) : true
 
           const out = {}
 
           for (const operationId in core.Operations) {
-            if (permissions === true || ~permissions.contains(operationId)) {
+            if (permissions === true || ~permissions.indexOf(operationId)) {
               const operation = core.Operations[operationId]
-              const outOperation = out[operation] = {
+              const outOperation = out[operationId] = {
                 id: operation.id,
                 meta: operation.meta,
                 resources: {},
@@ -67,7 +67,7 @@ module.exports = ({host, port, authHash, auth}, core) => {
               }
 
               for (const healthCheckId in core.Operations[operationId].healthChecks) { // eslint-disable-line guard-for-in
-                const healthCheck = core.Operations[operationId].healthChecks
+                const healthCheck = core.Operations[operationId].healthChecks[healthCheckId]
                 outOperation.healthChecks[healthCheckId] = {
                   id: healthCheck.id,
                   meta: healthCheck.meta,
