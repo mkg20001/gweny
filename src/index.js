@@ -44,12 +44,12 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
     if (!notificationType) {
       throwValError(JSON.stringify(notificationType) + ' is not a valid notification type (id=' + JSON.stringify(notificationId) + ')')
     }
-    Joi.validate(notification, schemaResource) // validate self
+    Joi.validate(notification, schemaNotification) // validate self
     Joi.validate(notification.config, notificationType.schema) // validate self.config
 
     try {
       const notificationFnc = notificationType.function
-      // core.attachNotification(notificationId, async notificationFnc(notification.config))
+      core.addNotification(notificationId, async notificationFnc(notification.config))
     } catch (e) {
       e.stack = 'Notification ' + JSON.stringify(notificationId) + '(type=' + JSON.stringify(notificationType) + ') failed to initialize: ' + e.stack
       throw e
@@ -59,6 +59,10 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
   for (const operationId in config.operations) { // eslint-disable-line guard-for-in
     const operation = config.operations[operationId]
     Joi.validate(operation, schemaOperation)
+
+    core.addOperation(operationId, operation)
+
+    let Resources = {}
 
     for (const resourceId in operation.resources) { // eslint-disable-line guard-for-in
       const resource = config.resources[resourceId]
@@ -71,7 +75,8 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
 
       try {
         const resourceFnc = resourceType.function
-        // core.attachResource(resourceId, async resourceFnc(resource.config))
+        // Resources[resourceId] = async resourceFnc(resource.config)
+        core.addResource(operationId, resourceId, resource, Resources[resourceId])
       } catch (e) {
         e.stack = 'Resource ' + JSON.stringify(operationId) + '.' + JSON.stringify(resourceId) + '(type=' + JSON.stringify(resourceType) + ') failed to initialize: ' + e.stack
         throw e
@@ -95,7 +100,7 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
 
       try {
         const healthCheckFnc = healthCheckType.function
-        // core.attachResource(resourceId, async resourceFnc(resource.config))
+        core.addHealthCheck(operationId, providerResource, providerCheckName, healthCheck, healthCheckFnc)
       } catch (e) {
         e.stack = 'Health Check ' + JSON.stringify(operationId) + '.' + JSON.stringify(healthCheckId) + '(type=' + JSON.stringify(healthCheck.type) + ') failed to initialize: ' + e.stack
         throw e
