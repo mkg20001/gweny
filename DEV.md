@@ -25,12 +25,27 @@ A resource should export the following properties:
 
 ## `NotificationData`, Object:
 - `occuredAt Date`: When the failure occured
+- `firstOccuredAt Date`: The first occurence of the failure since the last success
+- `isFirstOccurence Boolean`: Whether or not this is the first occurence
+- `occurenceCount`: Counter of failures for this healthCheck since last reset
+
+- `error`: The error as given by the health check
+
 - `operationId String`: ID of the operation that caused it to fail
 - `operation Object`: Operation information
+  - `name? String`: The friendly name specified in the operation details
   - `url? String`: The URL sepcified in the operation details
   - `desc? String`: The description specified in the operation details
-- `resourceId Object`: The resource ID that caused the failure
+- `resourceId String`: The resource ID that caused the failure
+- `resourceCheckId`: The resource check ID that caused the failure
 - `resource Object`: The resource configuration
+  - `name? String`: The friendly name specified in the resource details
+  - `errorDesc? String`: The error description specified in the resource details
+- `healthCheckId`: The health check ID that caused the failure
+- `healthCheck Object`: The healthCheck configuration
+  - `name? String`: The friendly name specified in the resource details
+  - `errorDesc? String`: The error description specified in the resource details
+
 
 # Config
 
