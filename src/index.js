@@ -21,6 +21,10 @@ const schemaNotification = Joi.object().keys({
   config: Joi.object().required()
 })
 
+const schemaNotificationInner = Joi.object().keys({
+  dest: Joi.array().required()
+})
+
 const schemaOperation = Joi.object().keys({
   name: Joi.string(),
   desc: Joi.string(),
@@ -114,6 +118,13 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
 
       Joi.validate(healthCheck, schemaHealthCheck) // validate self
       Joi.validate(healthCheck.config, healthCheckType.schema) // validate self.config
+      for (const notifiId in healthCheck.notification) { // eslint-disable-line guard-for-in
+        if (!core.Notifications[notifiId]) {
+          throwValError('Notification Type ' + notifiId + ' is not declared for Health Check ' + JSON.stringify(operationId) + '.' + JSON.stringify(healthCheckId) + '(type=' + JSON.stringify(healthCheck.type) + ')')
+        }
+        const notifi = healthCheck.notification[notifiId]
+        Joi.validate(notifi, schemaNotificationInner)
+      }
 
       try {
         const healthCheckFnc = healthCheckType.function

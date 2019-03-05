@@ -53,11 +53,19 @@ operations:
 notifications: # here notifications get configured
   email: # like one for email, let's call it email (but you can have multiple ones, too)
     type: email
-    config: # this one runs over the gmail server (internally uses nodemailer to send mails)
-      imap-server: mail.google.com:port
-      imap-user: ...
-      imap-password: ...
-      starttls: false
+    config:
+      mail:
+        host: mail.someserver.com
+        port: 587
+        secure: false
+        auth:
+          user: your-user
+          pass: your-pass
+      content:
+        from: '"Some User" <someuser@someserver.com>'
+        # TODO: allow override
+        # subject: ''
+        # content: ''
   tg:
     type: telegram
     config:

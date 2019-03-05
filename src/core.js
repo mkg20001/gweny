@@ -24,7 +24,7 @@ module.exports = ({timeZone, api: apiConfig}) => {
   }
 
   function createJob (config) {
-    const {interval, resource: {id: resourceId}, operation: {id: operationId}, id: checkId, checkId: resourceCheckId, healthCheck, db} = config
+    const {interval, notification: notifications, resource: {id: resourceId}, operation: {id: operationId}, id: checkId, checkId: resourceCheckId, healthCheck, db} = config
 
     const TAG = {operationId, resourceId, checkId}
 
@@ -96,7 +96,14 @@ module.exports = ({timeZone, api: apiConfig}) => {
           healthCheck: config
         }
 
-        // TODO: validate .notifications and send notification
+        for (const notifiId in notifications) { // eslint-disable-line guard-for-in
+          const notifi = notifications[notifiId]
+
+          log.info(TAG, 'Sending notification for %s', notifiId)
+
+          const Notification = Notifications[notifiId]
+          await Notification.notify(notifi.dest, notification)
+        }
       }
     })
   }
