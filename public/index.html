@@ -1,33 +1,87 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="./main.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
-  <!-- Material Design for Bootstrap fonts and icons -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+    <title>Gweny | Operations Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <center class="main-header" v-if="loading">
+        <h1>Gweny</h1>
+        <h2>Loading</h2>
+      </center>
+      <div v-else>
+        <center class="main-header">
+          <h1>Gweny</h1>
+        </center>
+        <div class="container">
+          <div v-for="operation in data" class="card">
+            <div class="card-header">
+              <div class="toolbar">
+                <i class="far fa-check-circle fa-3x" style="color: #64DD17 /* mdl lightgreen a700 */; margin-top: 4px;" v-if="operation.healthy"></i>
+                <i class="far fa-times-circle fa-3x" style="color: #D50000 /* mdl red a700 */; margin-top: 4px;" v-else></i>
+                <div>
+                  <a v-if="operation.meta.url" v-bind:href="operation.meta.url" style="color: inherit !important; text-decoration: none;"><h3 class="card-title" style="margin-bottom: 0">{{ operation.meta.name || operation.id }}</h3></a>
+                  <h3 v-else class="card-title">{{ operation.meta.name || operation.id }}</h3>
+                  <p class="card-text text-muted">{{ operation.meta.desc }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div v-for="check in operation.healthChecks" class="toolbar">
+                <i class="far fa-check-circle fa-2x" style="color: #64DD17 /* mdl lightgreen a700 */; margin-top: -2px;" v-if="check.status.healthy"></i>
+                <i class="far fa-times-circle fa-2x" style="color: #D50000 /* mdl red a700 */; margin-top: -2px;" v-else></i>
+                <div>
+                  <h3 class="card-title">{{ check.meta.name || check.id }}</h3>
+                  <div v-if="check.status.healthy">
+                    <p class="card-text text-muted">Last check {{ check.status.lastChecked }} - Interval {{ check.interval }}</p>
+                  </div>
+                  <div v-else>
+                    <p class="card-text text-error">{{ check.meta.errorDesc }}</p>
+                    <p class="card-text">First failure {{ check.status.occurences[0] }} - Last Check: {{ check.status.lastChecked }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="!operation.listHealthy.length" class="card-footer text-muted">
+              All services are down
+            </div>
+            <div v-else-if="operation.listHealthy.length === operation.healthChecks.length" class="card-footer text-muted">
+              All services are up
+            </div>
+            <div v-else class="card-footer text-muted">
+              {{ operation.listHealthy.length }} / {{ operation.healthChecks.length }} Services are up, {{ operation.listUnhealthy.length }} / {{ operation.healthChecks.length }} Services are down
+            </div>
+          </div>
+          <br>
+          <br>
+          <div class="card">
+            <div class="card-body">
+              <div class="toolbar" style="justify-content: space-between">
+                <p id="version">Gweny</p>
+                <p class="text-muted" style="text-align: right;">Last Refresh {{ lastRefresh }}</p>
+              </div>
+            </div>
+          </div>
+          <br>
+        </div>
+      </div>
+    </div>
 
-  <!-- Material Design for Bootstrap CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
-
-  <title>Gweny | Operations Dashboard</title>
-</head>
-
-<body>
-  <h2>Gweny</h1>
-
-  <!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
-  <script>
-    $(document).ready(function() {
-      $('body').bootstrapMaterialDesign()
-    })
-  </script>
-</body>
-
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script async src="./main.js"></script>
+  </body>
 </html>

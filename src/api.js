@@ -77,9 +77,9 @@ module.exports = ({host, port, authHash, auth}, core) => {
                     check: healthCheck.checkId
                   },
                   status: {
-                    healthy: Boolean(healthCheck.db.get('occurences')),
+                    healthy: !healthCheck.db.get('occurences'),
                     occurences: healthCheck.db.get('occurences'),
-                    lastCheck: healthCheck.db.get('lastCheck')
+                    lastChecked: healthCheck.db.get('lastChecked')
                   }
                 }
               }

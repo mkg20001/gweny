@@ -1,0 +1,27 @@
+body {
+  font-family: Nunito;
+}
+
+.main-header {
+  padding: 3em 6em;
+  font-family: "Maven Pro";
+}
+
+.card p {
+  margin-bottom: 0px;
+}
+
+.toolbar > :not(first) {
+  margin-right: 8px;
+}
+
+.toolbar {
+  display: flex;
+}
+
+.main-header h1 {
+  font-size: 6em;
+}
+.main-header h2 {
+  font-size: 3em;
+}
