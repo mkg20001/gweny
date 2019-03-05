@@ -1,0 +1,15 @@
+{
+  "name": "op-dashboard",
+  "version": "0.0.1",
+  "description": "OP dashboard",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "op",
+    "dashboard"
+  ],
+  "author": "Maciej Krüger <mkg20001@gmail.com>",
+  "license": "GPL-3.0"
+}
