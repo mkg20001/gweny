@@ -86,9 +86,11 @@ module.exports = ({host, port, authHash, auth}, core) => {
             }
           }
 
-          return true
+          return out
         }
       }))
+
+      await Server.start()
     },
     stop: async () => {
       await Server.stop()

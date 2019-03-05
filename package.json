@@ -4,7 +4,9 @@
   "description": "Manage all your running operations with ease",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "rm -rf dist && npm run build",
+    "build": "npx parcel build public/index.html"
   },
   "bin": {
     "./src/bin.js": "gweny"
