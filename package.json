@@ -25,6 +25,7 @@
     "hapi-spa-serve": "^0.1.1",
     "inert": "^5.1.2",
     "js-yaml": "^3.12.2",
+    "node-fetch": "^2.3.0",
     "nodemailer": "^5.1.1",
     "parcel-bundler": "^1.11.0",
     "pino": "^5.11.1",
