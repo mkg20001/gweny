@@ -18,6 +18,8 @@
   "license": "GPL-3.0",
   "dependencies": {
     "cron": "^1.6.0",
+    "hapi": "^18.1.0",
+    "hapi-auth-basic": "^5.0.0",
     "js-yaml": "^3.12.2",
     "nodemailer": "^5.1.1",
     "parcel-bundler": "^1.11.0",

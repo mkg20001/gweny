@@ -3,6 +3,7 @@
 const log = require('pino')('op-dashboard')
 
 const CronJob = require('cron').CronJob
+const API = require('./api')
 
 function DB (path, dbId) {
   // TODO: impl db
@@ -14,7 +15,7 @@ function DB (path, dbId) {
   }
 }
 
-module.exports = ({timeZone}) => {
+module.exports = ({timeZone, api: apiConfig}) => {
   let Notifications = {}
   let Operations = {}
 
@@ -29,6 +30,7 @@ module.exports = ({timeZone}) => {
 
     return new CronJob(interval, async () => {
       log.info(TAG, 'Starting check...')
+      db.set('lastChecked', new Date())
       try {
         await healthCheck()
 
@@ -93,11 +95,13 @@ module.exports = ({timeZone}) => {
           healthCheckId: checkId,
           healthCheck: config
         }
+
+        // TODO: validate .notifications
       }
     })
   }
 
-  return {
+  const Core = {
     addNotification: (id, notification) => {
       Notifications[id] = {
         id,
@@ -143,7 +147,7 @@ module.exports = ({timeZone}) => {
       }
       Operations[opId].healthChecks[opId].job = createJob(Operations[opId].healthChecks[opId])
     },
-    start: () => {
+    start: async () => {
       log.info('Starting...')
       for (const opId in Operations) { // eslint-disable-line guard-for-in
         for (const hcId in Operations[opId].healthCheck) { // eslint-disable-line guard-for-in
@@ -151,8 +155,11 @@ module.exports = ({timeZone}) => {
           Operations[opId].healthCheck[hcId].job.start()
         }
       }
+      if (api) {
+        await api.start()
+      }
     },
-    stop: () => {
+    stop: async () => {
       log.info('Stopping...')
       for (const opId in Operations) { // eslint-disable-line guard-for-in
         for (const hcId in Operations[opId].healthCheck) { // eslint-disable-line guard-for-in
@@ -160,8 +167,15 @@ module.exports = ({timeZone}) => {
           Operations[opId].healthCheck[hcId].job.stop()
         }
       }
+      if (api) {
+        await api.stop()
+      }
     },
     Notifications,
     Operations
   }
+
+  let api = apiConfig ? API(apiConfig, Core) : false
+
+  return Core
 }
