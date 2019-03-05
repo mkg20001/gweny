@@ -135,4 +135,6 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
       }
     }
   }
+
+  return core
 }

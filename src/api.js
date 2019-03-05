@@ -52,7 +52,7 @@ module.exports = ({host, port, authHash, auth}, core) => {
         method: 'GET',
         path: '/api/v1',
         handler: async (h, request) => {
-          const permissions = true
+          const permissions = auth ? request.credentials.permissions : true
 
           const out = {}
 
@@ -85,8 +85,13 @@ module.exports = ({host, port, authHash, auth}, core) => {
               }
             }
           }
+
+          return true
         }
       }))
+    },
+    stop: async () => {
+      await Server.stop()
     }
   }
 }

@@ -13,9 +13,9 @@ const config = yaml.safeLoad(String(fs.readFileSync(process.argv[2])))
 
 function err (err) {
   console.error(err.stack)
-  process.exit(2)
+  // process.exit(2)
 }
 
 main(config).then((server) => {
-  server.start().then(() => {}).catch(err)
-}).catch(err)
+  server.start().then(() => {}, err)
+}, err)

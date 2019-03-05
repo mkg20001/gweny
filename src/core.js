@@ -167,6 +167,7 @@ module.exports = ({timezone, api: apiConfig}) => {
         }
       }
       if (api) {
+        log.info('Starting api...')
         await api.start()
       }
     },
@@ -179,6 +180,7 @@ module.exports = ({timezone, api: apiConfig}) => {
         }
       }
       if (api) {
+        log.info('Stopping api...')
         await api.stop()
       }
     },
