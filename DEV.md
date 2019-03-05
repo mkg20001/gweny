@@ -6,14 +6,19 @@
 
 A resource should export the following properties:
 
-- `$`: An async function that will be called with the config. It _can_ throw an error, it _can_ be ignored based on the missing parameter. It _should_ validate the existance/validity of the given config data (example: whether a file exists)
+- `$.function(config)`: An async function that will be called with the config. It _can_ throw an error, it _can_ be ignored based on the missing parameter. It _should_ validate the existance/validity of the given config data (example: whether a file exists)
+  - It should return an object where every sub-object has the following properties:
+    - `function(config, generateFailure)`: An object that accepts the config, verifies whether the given resource is in the desired condition and throws otherwise
+    - `$.schema`: A [joi](npm.im/joi) schema to validate the config _before_ any code execution
+    - `minBackoff`: The minimal amount of backoff required for this operation, in ms
 - `$.schema`: A [joi](npm.im/joi) schema to validate the config _before_ any code execution
 
 ## Notification
 
-- `$`: An async function that will be called with the config. It _can_ throw an error which _will_ fataly crash the server. It _should_ validate the existance/validity of the given config data (example: whether an access token is valid)
+- `$.function`: An async function that will be called with the config. It _can_ throw an error which _will_ fataly crash the server. It _should_ validate the existance/validity of the given config data (example: whether an access token is valid)
   - It should return an object with the following properties:
     - `notify(NotificationData)`: An async function that should send a notification. Errors will cause exponential backoff
+    - `minBackoff`: The minimal amount of backoff required for this operation, in ms
 - `$.schema`: A [joi](npm.im/joi) schema to validate the config _before_ any code execution
 
 # Types

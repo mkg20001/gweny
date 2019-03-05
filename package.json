@@ -11,5 +11,9 @@
     "dashboard"
   ],
   "author": "Maciej Krüger <mkg20001@gmail.com>",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "dependencies": {
+    "parcel-bundler": "^1.11.0",
+    "read-last-lines": "^1.6.0"
+  }
 }
