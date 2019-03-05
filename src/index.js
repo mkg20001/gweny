@@ -10,7 +10,10 @@ const Core = require('./core')
 const Joi = require('joi')
 const schema = Joi.object().keys({
   operations: Joi.object().required(),
-  notifications: Joi.object().required()
+  notifications: Joi.object().required(),
+  server: {
+    timezone: Joi.string().required()
+  }
 })
 
 const schemaOperation = Joi.object().keys({
@@ -32,9 +35,9 @@ const throwValError = (err) => { // TODO: better errors
 }
 
 module.exports = async (config) => { // TODO: instead of single .validate calls, create monster struct that validates EVERYTHING beforehand
-  Joi.validate(config, schema)
-
   config = caseFix(config)
+
+  Joi.validate(config, schema)
 
   const core = Core(config.server)
 
