@@ -7,5 +7,5 @@ const fs = require('fs')
 
 const main = require('./')
 
-const config = yaml.parse(String(fs.readFileSync(process.argv[2])))
+const config = yaml.safeLoad(String(fs.readFileSync(process.argv[2])))
 main(config)

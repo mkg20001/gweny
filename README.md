@@ -29,9 +29,11 @@ operations:
         config:
           match-type: regex # ...which even includes checking logfiles with a regex to check if your background-task succeded
           match-last-lines: 20
-          matches: /^[0-9]+: DONE\!$/
+          matches: '/^[0-9]+: DONE\!$/'
         notification: # ...and get notified of these failures in various channels
-          - email
+          email:
+            dest:
+              - hello@world.net
       server-is-reachable: # here another one
         name: Server Reachability
         error-desc: The server is unreachable
@@ -40,8 +42,13 @@ operations:
         config:
           expect-status: 200 # ...to give a 200 OK status
           use-head: true # using the HEAD method (saves traffic)
-        notification: # ...and notifies of failures via email, too
-          - email
+        notification: # ...and notifies of failures via email, too, but also via telegram
+          email:
+            dest:
+              - hello@world.net
+          tg:
+            dest:
+              - +1234567890
 
 notifications: # here notifications get configured
   email: # like one for email, let's call it email (but you can have multiple ones, too)
@@ -49,6 +56,12 @@ notifications: # here notifications get configured
     config: # this one runs over the gmail server (internally uses nodemailer to send mails)
       imap-server: mail.google.com:port
       imap-user: ...
+      imap-password: ...
+      starttls: false
+  tg:
+    type: telegram
+    config:
+      bot-token: ...
 
 server: # later we need to define a server
   timezone: 'Europe/Berlin' # set your timezone, because everyone lives elsewhere

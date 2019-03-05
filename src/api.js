@@ -14,7 +14,7 @@ const hashCmp = {
 }
 
 module.exports = ({host, port, authHash, auth}, core) => {
-  const Server = new Hapi({host, port})
+  const Server = new Hapi.Server({host, port})
 
   return {
     start: async () => {

@@ -59,7 +59,7 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
     const notification = config.notifications[notificationId]
     const notificationType = notifications[notification.type]
     if (!notificationType) {
-      throwValError(JSON.stringify(notificationType) + ' is not a valid notification type (id=' + JSON.stringify(notificationId) + ')')
+      throwValError(JSON.stringify(notification.type) + ' is not a valid notification type (id=' + JSON.stringify(notificationId) + ')')
     }
     Joi.validate(notification, schemaNotification) // validate self
     Joi.validate(notification.config, notificationType.schema) // validate self.config
@@ -85,7 +85,7 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
       const resource = config.resources[resourceId]
       const resourceType = resources[resource.type]
       if (!resourceType) {
-        throwValError(JSON.stringify(resourceType) + ' is not a valid resource type (id=' + JSON.stringify(resourceId) + ')')
+        throwValError(JSON.stringify(resource.type) + ' is not a valid resource type (id=' + JSON.stringify(resourceId) + ')')
       }
       Joi.validate(resource, schemaResource) // validate self
       Joi.validate(resource.config, resourceType.schema) // validate self.config
