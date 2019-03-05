@@ -16,6 +16,11 @@ const schema = Joi.object().keys({
   }
 })
 
+const schemaNotification = Joi.object().keys({
+  type: Joi.string().required(),
+  config: Joi.object().required()
+})
+
 const schemaOperation = Joi.object().keys({
   name: Joi.string(),
   desc: Joi.string(),
@@ -28,6 +33,15 @@ const schemaResource = Joi.object().keys({
   name: Joi.string(),
   desc: Joi.string(),
   config: Joi.object().required()
+})
+
+const schemaHealthCheck = Joi.object().keys({
+  type: Joi.string().required(),
+  name: Joi.string(),
+  errorDesc: Joi.string(),
+  interval: Joi.string(), // TODO: check cron pattern
+  config: Joi.object().required(),
+  notification: Joi.array().required() // TODO: check better
 })
 
 const throwValError = (err) => { // TODO: better errors
