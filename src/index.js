@@ -73,7 +73,31 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
         const resourceFnc = resourceType.function
         // core.attachResource(resourceId, async resourceFnc(resource.config))
       } catch (e) {
-        e.stack = 'Resource ' + JSON.stringify(resourceId) + '(type=' + JSON.stringify(resourceType) + ') failed to initialize: ' + e.stack
+        e.stack = 'Resource ' + JSON.stringify(operationId) + '.' + JSON.stringify(resourceId) + '(type=' + JSON.stringify(resourceType) + ') failed to initialize: ' + e.stack
+        throw e
+      }
+    }
+
+    for (const healthCheckId in operation.healthChecks) { // eslint-disable-line guard-for-in
+      const healthCheck = config.healthChecks[healthCheckId]
+      const [providerResource, providerCheckName] = healthCheck.type.split('.')
+      let healthCheckType = Resources[providerResource]
+      if (!healthCheckType) {
+        throwValError(JSON.stringify(providerResource) + ' is not a valid resource in operation ' + JSON.stringify(operationId) + ' (hcid=' + JSON.stringify(healthCheckId) + ')')
+      }
+      healthCheckType = healthCheckType[providerCheckName]
+      if (!healthCheckType) {
+        throwValError(JSON.stringify(providerCheckName) + ' is not a valid resource check type in operation ' + JSON.stringify(operationId) + '.' + JSON.stringify(providerResource) + ' (hcid=' + JSON.stringify(healthCheckId) + ')')
+      }
+
+      Joi.validate(healthCheck, schemaHealthCheck) // validate self
+      Joi.validate(healthCheck.config, healthCheckType.schema) // validate self.config
+
+      try {
+        const healthCheckFnc = healthCheckType.function
+        // core.attachResource(resourceId, async resourceFnc(resource.config))
+      } catch (e) {
+        e.stack = 'Health Check ' + JSON.stringify(operationId) + '.' + JSON.stringify(healthCheckId) + '(type=' + JSON.stringify(healthCheck.type) + ') failed to initialize: ' + e.stack
         throw e
       }
     }
