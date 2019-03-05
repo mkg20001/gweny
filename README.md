@@ -11,7 +11,7 @@ operations:
   deb.mkg20001.io: # give your operation an id
     url: https://deb.mkg20001.io # add an url
     desc: 'Debian Package Repo' # and a desc to the ui
-    resource: # define resources that exist
+    resources: # define resources that exist
       log:
         type: log # such as a logfile
         config:

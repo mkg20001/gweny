@@ -15,7 +15,7 @@ function DB (path, dbId) {
   }
 }
 
-module.exports = ({timeZone, api: apiConfig}) => {
+module.exports = ({timezone, api: apiConfig}) => {
   let Notifications = {}
   let Operations = {}
 
@@ -105,17 +105,19 @@ module.exports = ({timeZone, api: apiConfig}) => {
           await Notification.notify(notifi.dest, notification)
         }
       }
-    })
+    }, null, false, timezone)
   }
 
   const Core = {
     addNotification: (id, notification) => {
+      log.info({id}, 'Adding notification %s', id)
       Notifications[id] = {
         id,
         notification
       }
     },
     addOperation: (id, operation) => {
+      log.info({id}, 'Adding operation %s', id)
       Operations[id] = {
         id,
         meta: {
@@ -128,6 +130,7 @@ module.exports = ({timeZone, api: apiConfig}) => {
       }
     },
     addResource: (opId, id, config, resource) => {
+      log.info({opId, id}, 'Adding resource %s', opId + '.' + id)
       Operations[opId].resources[id] = {
         id,
         resource,
@@ -138,6 +141,7 @@ module.exports = ({timeZone, api: apiConfig}) => {
       }
     },
     addHealthCheck: (opId, rId, rCheck, id, config, fnc) => {
+      log.info({opId, id, rId, rCheck}, 'Adding health check %s', opId + '.' + id + '@' + opId + rId + rCheck)
       Operations[opId].healthChecks[opId] = {
         id,
         meta: {

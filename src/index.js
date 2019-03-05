@@ -86,7 +86,7 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
     let Resources = {}
 
     for (const resourceId in operation.resources) { // eslint-disable-line guard-for-in
-      const resource = config.resources[resourceId]
+      const resource = operation.resources[resourceId]
       const resourceType = resources[resource.type]
       if (!resourceType) {
         throwValError(JSON.stringify(resource.type) + ' is not a valid resource type (id=' + JSON.stringify(resourceId) + ')')
@@ -105,7 +105,7 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
     }
 
     for (const healthCheckId in operation.healthChecks) { // eslint-disable-line guard-for-in
-      const healthCheck = config.healthChecks[healthCheckId]
+      const healthCheck = operation.healthChecks[healthCheckId]
       const [providerResource, providerCheckName] = healthCheck.type.split('.')
       let healthCheckType = Resources[providerResource]
       if (!healthCheckType) {
@@ -128,7 +128,7 @@ module.exports = async (config) => { // TODO: instead of single .validate calls,
 
       try {
         const healthCheckFnc = healthCheckType.function
-        core.addHealthCheck(operationId, providerResource, providerCheckName, healthCheck, healthCheckFnc)
+        core.addHealthCheck(operationId, providerResource, providerCheckName, healthCheckId, healthCheck, healthCheckFnc)
       } catch (e) {
         e.stack = 'Health Check ' + JSON.stringify(operationId) + '.' + JSON.stringify(healthCheckId) + '(type=' + JSON.stringify(healthCheck.type) + ') failed to initialize: ' + e.stack
         throw e
