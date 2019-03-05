@@ -49,6 +49,18 @@ notifications: # here notifications get configured
     config: # this one runs over the gmail server (internally uses nodemailer to send mails)
       imap-server: mail.google.com:port
       imap-user: ...
+
+server: # later we need to define a server
+  timezone: 'Europe/Berlin' # set your timezone, because everyone lives elsewhere
+  api: # enable the api (you can remove this if you don't need it)
+    host: localhost
+    port: 5328
+    authHash: 'bcrypt' # you can skip that and "auth" as well if you don't need auth, or use 'plain' as hash if you hate security
+    auth: # access the frontend with HTTP AUTH
+      user: # you can also use those as API urls with http://user:hellogweny@your-server/ for ex
+        permission: # make a list of operations this user can access the status of, or set to true to allow all
+          - deb.mkg20001.io
+        password: $2y$12$wJCs3eAfWqQDEMA.uOmP/ufe0yPxo7K7pE4gEnOg6VXQeOkakpO6i # hellogweny
 ```
 
 # Roadmap
