@@ -20,9 +20,13 @@
     "cron": "^1.6.0",
     "hapi": "^18.1.0",
     "hapi-auth-basic": "^5.0.0",
+    "hapi-pino": "^5.4.1",
+    "hapi-spa-serve": "^0.1.1",
+    "inert": "^5.1.2",
     "js-yaml": "^3.12.2",
     "nodemailer": "^5.1.1",
     "parcel-bundler": "^1.11.0",
+    "pino": "^5.11.1",
     "read-last-lines": "^1.6.0"
   },
   "files": [

@@ -1,6 +1,8 @@
 'use strict'
 
-const hapi = require('hapi')
+const Hapi = require('hapi')
+const Bcrypt = require('bcrypt')
+const path = require('path')
 
 const hashCmp = {
   bcrypt: async (pw, hash) => {
@@ -12,7 +14,7 @@ const hashCmp = {
 }
 
 module.exports = ({host, port, authHash, auth}, core) => {
-  const Server = new hapi({host, port})
+  const Server = new Hapi({host, port})
 
   return {
     start: async () => {
@@ -35,13 +37,16 @@ module.exports = ({host, port, authHash, auth}, core) => {
         Server.auth.default('simple')
       }
 
-      Server.route({
-        method: 'GET',
-        path: '/',
-        handler: async (h, request) => {
-
-        }
+      await Server.register({
+        plugin: require('hapi-pino'),
+        options: {name: 'gweny:api'}
       })
+
+      await Server.register({
+        plugin: require('inert')
+      })
+
+      require('hapi-spa-serve')(Server, {assets: path.join(__dirname, '..', 'dist')})
 
       Server.route(({
         method: 'GET',

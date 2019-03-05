@@ -1,6 +1,6 @@
 'use strict'
 
-const log = require('pino')('op-dashboard')
+const log = require('pino')('gweny')
 
 const CronJob = require('cron').CronJob
 const API = require('./api')
@@ -96,7 +96,7 @@ module.exports = ({timeZone, api: apiConfig}) => {
           healthCheck: config
         }
 
-        // TODO: validate .notifications
+        // TODO: validate .notifications and send notification
       }
     })
   }
