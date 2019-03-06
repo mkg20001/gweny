@@ -102,7 +102,7 @@ module.exports = ({timezone, api: apiConfig}) => {
 
           log.info(TAG, 'Sending notification for %s', notifiId)
 
-          const Notification = Notifications[notifiId]
+          const Notification = Notifications[notifiId].notification
           await Notification.notify(notifi.dest, notification)
         }
       }
@@ -143,7 +143,7 @@ module.exports = ({timezone, api: apiConfig}) => {
     },
     addHealthCheck: (opId, rId, rCheck, id, config, fnc) => {
       log.info({opId, id, rId, rCheck}, 'Adding health check %s', opId + '.' + id + '@' + opId + rId + rCheck)
-      Operations[opId].healthChecks[opId] = {
+      Operations[opId].healthChecks[id] = {
         id,
         meta: {
           name: config.name,
@@ -157,7 +157,7 @@ module.exports = ({timezone, api: apiConfig}) => {
         interval: config.interval,
         db: DB(opId + '#' + id)
       }
-      Operations[opId].healthChecks[opId].job = createJob(Operations[opId].healthChecks[opId])
+      Operations[opId].healthChecks[id].job = createJob(Operations[opId].healthChecks[id])
     },
     start: async () => {
       log.info('Starting...')

@@ -8,7 +8,8 @@ const app = window.dw = new Vue({
     loading: true,
     lastError: false,
     data: false,
-    lastRefresh: 0
+    lastRefresh: 0,
+    version: require('../package.json').version
   }
 })
 
@@ -46,6 +47,5 @@ function doFetch () {
 }
 
 $(document).ready(() => {
-  $('#version').text('Gweny ' + require('../package.json').version)
   doFetch()
 })
